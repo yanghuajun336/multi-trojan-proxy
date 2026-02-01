@@ -27,13 +27,13 @@
 
 **目的**: 创建Go项目基础结构和依赖配置
 
-- [ ] T001 创建项目目录结构（cmd/proxy, internal/{config,proxy,router,trojan,health}, pkg/logger, configs, data, tests）
-- [ ] T002 初始化Go模块 `go mod init github.com/yourname/proxy`
-- [ ] T003 [P] 添加核心依赖到go.mod（trojan-go, yaml.v3, fsnotify, geoip2-golang）
-- [ ] T004 [P] 创建 .gitignore 文件（忽略 config.yaml, *.log, data/*.mmdb, 可执行文件）
-- [ ] T005 [P] 创建 README.md 包含项目简介和快速开始链接
-- [ ] T006 [P] 复制 quickstart.md 到项目根目录的 docs/quickstart.md
-- [ ] T007 [P] 创建配置示例文件 configs/config.example.yaml（基于 contracts/config-schema.md）
+- [X] T001 创建项目目录结构（cmd/proxy, internal/{config,proxy,router,trojan,health}, pkg/logger, configs, data, tests）
+- [X] T002 初始化Go模块 `go mod init github.com/yourname/proxy`
+- [X] T003 [P] 添加核心依赖到go.mod（trojan-go, yaml.v3, fsnotify, geoip2-golang）
+- [X] T004 [P] 创建 .gitignore 文件（忽略 config.yaml, *.log, data/*.mmdb, 可执行文件）
+- [X] T005 [P] 创建 README.md 包含项目简介和快速开始链接
+- [X] T006 [P] 复制 quickstart.md 到项目根目录的 docs/quickstart.md
+- [X] T007 [P] 创建配置示例文件 configs/config.example.yaml（基于 contracts/config-schema.md）
 
 ---
 
@@ -43,12 +43,12 @@
 
 **⚠️ 关键**: 在此阶段完成前，任何用户场景都无法开始实现
 
-- [ ] T008 实现日志工具包 pkg/logger/logger.go（支持分级日志、文件输出、日志轮转）
-- [ ] T009 [P] 实现配置结构定义 internal/config/types.go（ProxyConfig, NodeConfig, RoutingRule等，基于data-model.md）
-- [ ] T010 实现配置文件加载 internal/config/loader.go（YAML解析、验证、错误处理）
-- [ ] T011 实现配置文件监听 internal/config/watcher.go（使用fsnotify，支持热重载）
-- [ ] T012 [P] 创建主程序入口 cmd/proxy/main.go（解析命令行参数、加载配置、启动服务）
-- [ ] T013 实现Trojan客户端封装 internal/trojan/client.go（连接trojan服务器、维护连接状态）
+- [X] T008 实现日志工具包 pkg/logger/logger.go（支持分级日志、文件输出、日志轮转）
+- [X] T009 [P] 实现配置结构定义 internal/config/types.go（ProxyConfig, NodeConfig, RoutingRule等，基于data-model.md）
+- [X] T010 实现配置文件加载 internal/config/loader.go（YAML解析、验证、错误处理）
+- [X] T011 实现配置文件监听 internal/config/watcher.go（使用fsnotify，支持热重载）
+- [X] T012 [P] 创建主程序入口 cmd/proxy/main.go（解析命令行参数、加载配置、启动服务）
+- [X] T013 实现Trojan客户端封装 internal/trojan/client.go（连接trojan服务器、维护连接状态）
 
 **检查点**: 基础设施就绪 - 用户场景实现可以并行开始
 
@@ -62,13 +62,13 @@
 
 ### 实现 用户场景 1
 
-- [ ] T014 [P] [US1] 实现HTTP代理服务器 internal/proxy/server.go（创建http.Server，监听配置的端口）
-- [ ] T015 [P] [US1] 实现HTTP请求处理器 internal/proxy/handler.go（处理HTTP和HTTPS CONNECT请求）
-- [ ] T016 [US1] 实现HTTP请求转发逻辑 internal/proxy/forwarder.go（通过trojan连接转发到目标服务器）
-- [ ] T017 [US1] 实现连接池基础结构 internal/trojan/pool.go（为每个节点维护连接池，支持获取/归还连接）
-- [ ] T018 [US1] 实现简单轮询节点选择器 internal/trojan/selector.go（基本的轮询算法选择可用节点）
-- [ ] T019 [US1] 在main.go中集成代理服务器启动逻辑
-- [ ] T020 [US1] 添加基本错误处理和日志记录（连接失败、转发错误等）
+- [X] T014 [P] [US1] 实现HTTP代理服务器 internal/proxy/server.go（创建http.Server，监听配置的端口）
+- [X] T015 [P] [US1] 实现HTTP请求处理器 internal/proxy/handler.go（处理HTTP和HTTPS CONNECT请求）
+- [X] T016 [US1] 实现HTTP请求转发逻辑 internal/proxy/forwarder.go（通过trojan连接转发到目标服务器）
+- [X] T017 [US1] 实现连接池基础结构 internal/trojan/pool.go（为每个节点维护连接池，支持获取/归还连接）
+- [X] T018 [US1] 实现简单轮询节点选择器 internal/trojan/selector.go（基本的轮询算法选择可用节点）
+- [X] T019 [US1] 在main.go中集成代理服务器启动逻辑
+- [X] T020 [US1] 添加基本错误处理和日志记录（连接失败、转发错误等）
 
 **检查点**: 此时用户场景 1 应完全可用并可独立测试 - 这就是MVP！
 

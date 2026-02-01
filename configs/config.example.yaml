@@ -1,0 +1,131 @@
+# 多Trojan客户端统一代理服务 - 配置示例
+# 复制此文件为 config.yaml 并修改为你的实际配置
+
+# 代理服务配置
+proxy:
+  # 监听地址和端口
+  listen: "0.0.0.0:8080"
+  
+  # HTTP请求超时时间
+  timeout: 30s
+  
+  # 最大并发连接数
+  max_concurrent: 20
+
+# Trojan节点配置列表
+nodes:
+  # 第一个节点示例
+  - name: "us-node-1"
+    server: "us1.trojan.example.com"  # 替换为你的Trojan服务器地址
+    port: 443
+    password: "your_password_here"     # 替换为你的Trojan密码
+    weight: 10                         # 负载均衡权重（1-100）
+    enabled: true                      # 是否启用此节点
+    
+  # 第二个节点示例
+  - name: "hk-node-1"
+    server: "hk1.trojan.example.com"
+    port: 443
+    password: "your_password_here"
+    weight: 5
+    enabled: true
+    
+  # 可以添加更多节点...
+  # - name: "jp-node-1"
+  #   server: "jp1.trojan.example.com"
+  #   port: 443
+  #   password: "your_password_here"
+  #   weight: 8
+  #   enabled: true
+
+# 路由规则配置（可选）
+# 如果不配置此部分，所有流量都会通过代理
+routing:
+  # GeoIP数据库文件路径（可选，用于GEOIP规则）
+  # 下载地址: https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb
+  geoip_database: "data/GeoLite2-Country.mmdb"
+  
+  # 路由规则列表（按顺序匹配）
+  rules:
+    # 国内常见网站直连
+    - type: DOMAIN-SUFFIX
+      pattern: "baidu.com"
+      action: DIRECT
+      
+    - type: DOMAIN-SUFFIX
+      pattern: "taobao.com"
+      action: DIRECT
+      
+    - type: DOMAIN-SUFFIX
+      pattern: "qq.com"
+      action: DIRECT
+      
+    - type: DOMAIN-SUFFIX
+      pattern: "jd.com"
+      action: DIRECT
+      
+    # 国外常见网站代理
+    - type: DOMAIN-SUFFIX
+      pattern: "google.com"
+      action: PROXY
+      
+    - type: DOMAIN-SUFFIX
+      pattern: "youtube.com"
+      action: PROXY
+      
+    - type: DOMAIN-SUFFIX
+      pattern: "twitter.com"
+      action: PROXY
+      
+    # 局域网IP直连
+    - type: IP-CIDR
+      pattern: "192.168.0.0/16"
+      action: DIRECT
+      
+    - type: IP-CIDR
+      pattern: "10.0.0.0/8"
+      action: DIRECT
+      
+    - type: IP-CIDR
+      pattern: "172.16.0.0/12"
+      action: DIRECT
+      
+    - type: IP-CIDR
+      pattern: "127.0.0.0/8"
+      action: DIRECT
+      
+    # 中国IP直连（需要geoip_database）
+    - type: GEOIP
+      pattern: "CN"
+      action: DIRECT
+      
+    # 广告域名拒绝（示例）
+    # - type: DOMAIN-SUFFIX
+    #   pattern: "ad.doubleclick.net"
+    #   action: REJECT
+      
+    # 默认规则：其他所有流量走代理（必须是最后一条）
+    - type: FINAL
+      action: PROXY
+
+# 健康检查配置
+health_check:
+  # 检查间隔（不超过30秒）
+  interval: 30s
+  
+  # 单次探测超时
+  timeout: 5s
+  
+  # 连续失败阈值（达到后标记节点为不健康）
+  failure_threshold: 3
+
+# 日志配置
+logging:
+  # 日志级别: debug, info, warn, error
+  level: "info"
+  
+  # 日志文件路径（为空则输出到stdout）
+  file: "/var/log/proxy/proxy.log"
+  
+  # 单个日志文件最大大小（MB）
+  max_size: 100
