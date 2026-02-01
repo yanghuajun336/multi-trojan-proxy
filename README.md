@@ -1,5 +1,9 @@
 # Multi-Trojan Proxy Service
 
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/yanghuajun336/multi-trojan-proxy?style=social)](https://github.com/yanghuajun336/multi-trojan-proxy/stargazers)
+
 统一的HTTP代理服务，内部管理多个Trojan客户端连接，提供单一代理入口，支持自动故障转移和负载均衡。
 
 ## 功能特性
