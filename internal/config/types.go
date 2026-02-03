@@ -20,17 +20,32 @@ type ProxyConfig struct {
 
 // NodeConfig represents a Trojan node configuration
 type NodeConfig struct {
-	Name     string `yaml:"name"`
-	Server   string `yaml:"server"`
-	Port     int    `yaml:"port"`
-	Password string `yaml:"password"`
-	Weight   int    `yaml:"weight"`
-	Enabled  bool   `yaml:"enabled"`
+	Name     string    `yaml:"name"`
+	Server   string    `yaml:"server"`
+	Port     int       `yaml:"port"`
+	Password string    `yaml:"password"`
+	Weight   int       `yaml:"weight"`
+	Enabled  bool      `yaml:"enabled"`
+	SSL      SSLConfig `yaml:"ssl,omitempty"` // SSL/TLS配置
+}
+
+// SSLConfig represents SSL/TLS configuration for Trojan connection
+type SSLConfig struct {
+	Verify         bool     `yaml:"verify"`           // 是否验证服务器证书
+	VerifyHostname bool     `yaml:"verify_hostname"`  // 是否验证主机名
+	SNI            string   `yaml:"sni"`              // TLS SNI字段（必需）
+	Cert           string   `yaml:"cert,omitempty"`   // 客户端证书路径
+	Cipher         string   `yaml:"cipher,omitempty"` // TLS 1.2密码套件
+	CipherTLS13    string   `yaml:"cipher_tls13,omitempty"` // TLS 1.3密码套件
+	ALPN           []string `yaml:"alpn,omitempty"`   // 应用层协议协商
+	ReuseSession   bool     `yaml:"reuse_session"`    // 是否复用TLS会话
+	SessionTicket  bool     `yaml:"session_ticket"`   // 是否使用会话票据
 }
 
 // RoutingConfig represents routing rules configuration
 type RoutingConfig struct {
 	GeoIPDatabase string         `yaml:"geoip_database"`
+	RulesFile     string         `yaml:"rules_file,omitempty"` // 外部规则文件路径
 	Rules         []RoutingRule  `yaml:"rules"`
 }
 
@@ -75,8 +90,16 @@ func (c *Config) SetDefaults() {
 		if c.Nodes[i].Weight == 0 {
 			c.Nodes[i].Weight = 10
 		}
-		// Enabled defaults to true if not explicitly set
-		// This is handled by YAML unmarshaling
+		// SSL defaults
+		if c.Nodes[i].SSL.SNI == "" {
+			// 如果未设置SNI，使用server地址
+			c.Nodes[i].SSL.SNI = c.Nodes[i].Server
+		}
+		if c.Nodes[i].SSL.ALPN == nil || len(c.Nodes[i].SSL.ALPN) == 0 {
+			c.Nodes[i].SSL.ALPN = []string{"h2", "http/1.1"}
+		}
+		// 默认开启TLS会话复用
+		c.Nodes[i].SSL.ReuseSession = true
 	}
 
 	// Health check defaults
@@ -146,6 +169,10 @@ func (c *Config) Validate() error {
 		}
 		if node.Weight <= 0 {
 			return ErrInvalidConfig("node[%d].weight must be positive", node.Name)
+		}
+		// 验证SSL配置
+		if node.SSL.SNI == "" {
+			return ErrInvalidConfig("node[%d].ssl.sni is required (can use server address as default)", node.Name)
 		}
 		if node.Enabled {
 			hasEnabledNode = true

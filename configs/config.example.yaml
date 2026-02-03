@@ -1,5 +1,8 @@
 # 多Trojan客户端统一代理服务 - 配置示例
 # 复制此文件为 config.yaml 并修改为你的实际配置
+#
+# 注意：为了避免配置文件过长，现在支持将路由规则分离到独立文件
+# 查看 config.split.example.yaml 和 rules.example.yaml 了解分离配置方式
 
 # 代理服务配置
 proxy:
@@ -14,21 +17,34 @@ proxy:
 
 # Trojan节点配置列表
 nodes:
-  # 第一个节点示例
+  # 第一个节点示例 - 最简配置
   - name: "us-node-1"
     server: "us1.trojan.example.com"  # 替换为你的Trojan服务器地址
     port: 443
     password: "your_password_here"     # 替换为你的Trojan密码
     weight: 10                         # 负载均衡权重（1-100）
     enabled: true                      # 是否启用此节点
+    ssl:
+      sni: "bilibili.com"             # ⚠️ SNI伪装域名（必需）
+      verify: false                    # 是否验证服务器证书
+      verify_hostname: false           # 是否验证主机名
     
-  # 第二个节点示例
+  # 第二个节点示例 - 完整配置
   - name: "hk-node-1"
     server: "hk1.trojan.example.com"
     port: 443
     password: "your_password_here"
     weight: 5
     enabled: true
+    ssl:
+      sni: "bilibili.com"             # SNI伪装域名
+      verify: false                    # 不验证证书（适用于自签名证书）
+      verify_hostname: false
+      alpn: ["h2", "http/1.1"]        # 应用层协议协商（默认值）
+      reuse_session: true              # TLS会话复用（默认true）
+      session_ticket: false            # 会话票据（默认false）
+      # cipher: "..."                  # TLS 1.2密码套件（可选）
+      # cipher_tls13: "..."            # TLS 1.3密码套件（可选）
     
   # 可以添加更多节点...
   # - name: "jp-node-1"
@@ -37,6 +53,10 @@ nodes:
   #   password: "your_password_here"
   #   weight: 8
   #   enabled: true
+  #   ssl:
+  #     sni: "www.microsoft.com"
+  #     verify: false
+  #     verify_hostname: false
 
 # 路由规则配置（可选）
 # 如果不配置此部分，所有流量都会通过代理

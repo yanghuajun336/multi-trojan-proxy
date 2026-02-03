@@ -59,32 +59,21 @@ func (c *Client) Connect(ctx context.Context) error {
 }
 
 // Dial establishes a connection to the target through the Trojan tunnel
-// This is a simplified version - full Trojan protocol implementation would go here
 func (c *Client) Dial(ctx context.Context, network, address string) (net.Conn, error) {
 	if c.closed {
 		return nil, fmt.Errorf("client is closed")
 	}
 
-	// Ensure we're connected to the Trojan server
-	if c.conn == nil {
-		if err := c.Connect(ctx); err != nil {
-			return nil, err
-		}
+	// Establish a complete Trojan connection with TLS and protocol handshake
+	conn, err := dialTrojan(c.config, address)
+	if err != nil {
+		return nil, fmt.Errorf("trojan dial failed for %s: %w", address, err)
 	}
 
-	// TODO: Implement full Trojan protocol handshake
-	// For now, this is a placeholder that returns the raw connection
-	// In a full implementation, this would:
-	// 1. Send Trojan authentication header
-	// 2. Send target address
-	// 3. Complete the handshake
-	// 4. Return a connection that can be used for data transfer
-
+	c.conn = conn
 	c.lastUsed = time.Now()
-	
-	// Placeholder: In reality, we would create a new connection through trojan-go library
-	// For MVP, we'll implement a direct pass-through first, then integrate trojan-go
-	return c.conn, nil
+
+	return conn, nil
 }
 
 // Close closes the client connection

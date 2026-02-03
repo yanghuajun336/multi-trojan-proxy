@@ -82,14 +82,14 @@
 
 ### 实现 用户场景 2
 
-- [ ] T021 [P] [US2] 实现节点状态结构 internal/health/status.go（NodeStatus定义，健康状态、延迟、统计信息）
-- [ ] T022 [P] [US2] 实现健康检查器 internal/health/checker.go（定期探测节点可用性和延迟）
-- [ ] T023 [US2] 实现主动健康探测 internal/health/probe.go（建立测试连接、测量延迟、记录结果）
-- [ ] T024 [US2] 实现被动健康检测 internal/health/passive.go（记录实际请求的成功/失败，快速标记异常）
-- [ ] T025 [US2] 增强节点选择器 internal/trojan/selector.go（加权轮询算法、排除不健康节点、支持多种策略）
-- [ ] T026 [US2] 实现故障转移逻辑 internal/proxy/failover.go（请求失败时重试其他节点）
-- [ ] T027 [US2] 在main.go中启动健康检查器
-- [ ] T028 [US2] 添加节点切换日志和统计信息更新
+- [X] T021 [P] [US2] 实现节点状态结构 internal/health/status.go（NodeStatus定义，健康状态、延迟、统计信息）
+- [X] T022 [P] [US2] 实现健康检查器 internal/health/checker.go（定期探测节点可用性和延迟）
+- [X] T023 [US2] 实现主动健康探测 internal/health/probe.go（建立测试连接、测量延迟、记录结果）
+- [X] T024 [US2] 实现被动健康检测 internal/health/passive.go（记录实际请求的成功/失败，快速标记异常）
+- [X] T025 [US2] 增强节点选择器 internal/trojan/selector.go（加权轮询算法、排除不健康节点、支持多种策略）
+- [X] T026 [US2] 实现故障转移逻辑 internal/proxy/failover.go（请求失败时重试其他节点）
+- [X] T027 [US2] 在main.go中启动健康检查器
+- [X] T028 [US2] 添加节点切换日志和统计信息更新
 
 **检查点**: 用户场景 1 和 2 现在都应独立工作，服务具备高可用性
 
@@ -105,15 +105,15 @@
 
 ### 实现 用户场景 4
 
-- [ ] T029 [P] [US4] 实现路由规则结构和类型 internal/router/types.go（RoutingRule定义、Action枚举）
-- [ ] T030 [P] [US4] 实现域名规则匹配器 internal/router/domain.go（DOMAIN和DOMAIN-SUFFIX匹配逻辑）
-- [ ] T031 [P] [US4] 实现IP规则匹配器 internal/router/ipcidr.go（IP-CIDR范围匹配，使用net.IPNet）
-- [ ] T032 [P] [US4] 实现GeoIP查询封装 internal/router/geoip.go（加载GeoLite2数据库、IP到国家代码查询）
-- [ ] T033 [US4] 实现路由引擎 internal/router/router.go（按顺序匹配规则、返回路由动作）
-- [ ] T034 [US4] 在配置加载中添加路由规则解析 internal/config/loader.go
-- [ ] T035 [US4] 在代理处理器中集成路由引擎 internal/proxy/handler.go（DIRECT请求直连、PROXY请求走trojan、REJECT请求拒绝）
-- [ ] T036 [US4] 实现DNS缓存 internal/router/dnscache.go（缓存域名解析结果，加速规则匹配）
-- [ ] T037 [US4] 添加规则匹配日志和统计（HitCount更新）
+- [X] T029 [P] [US4] 实现路由规则结构和类型 internal/router/types.go（RoutingRule定义、Action枚举）
+- [X] T030 [P] [US4] 实现域名规则匹配器 internal/router/domain.go（DOMAIN和DOMAIN-SUFFIX匹配逻辑）
+- [X] T031 [P] [US4] 实现IP规则匹配器 internal/router/ipcidr.go（IP-CIDR范围匹配，使用net.IPNet）
+- [X] T032 [P] [US4] 实现GeoIP查询封装 internal/router/geoip.go（加载GeoLite2数据库、IP到国家代码查询）
+- [X] T033 [US4] 实现路由引擎 internal/router/router.go（按顺序匹配规则、返回路由动作）
+- [X] T034 [US4] 在配置加载中添加路由规则解析 internal/config/loader.go
+- [X] T035 [US4] 在代理处理器中集成路由引擎 internal/proxy/handler.go（DIRECT请求直连、PROXY请求走trojan、REJECT请求拒绝）
+- [X] T036 [US4] 实现DNS缓存 internal/router/dnscache.go（缓存域名解析结果，加速规则匹配）
+- [X] T037 [US4] 添加规则匹配日志和统计（HitCount更新）
 
 **检查点**: 用户场景 1, 2, 4 现在都应独立工作，服务支持智能路由
 
@@ -129,11 +129,11 @@
 
 ### 实现 用户场景 3
 
-- [ ] T038 [US3] 验证并发连接处理 internal/proxy/server.go（确认每个连接独立goroutine处理）
-- [ ] T039 [US3] 实现并发连接数限制 internal/proxy/server.go（基于MaxConcurrent配置，防止过载）
-- [ ] T040 [US3] 实现客户端连接跟踪 internal/proxy/connections.go（记录活跃连接、统计信息）
-- [ ] T041 [US3] 添加连接级别的超时控制 internal/proxy/handler.go（避免连接长时间占用）
-- [ ] T042 [US3] 优化连接池并发安全 internal/trojan/pool.go（使用互斥锁保护共享状态）
+- [X] T038 [US3] 验证并发连接处理 internal/proxy/server.go（确认每个连接独立goroutine处理）
+- [X] T039 [US3] 实现并发连接数限制 internal/proxy/server.go（基于MaxConcurrent配置，防止过载）
+- [X] T040 [US3] 实现客户端连接跟踪 internal/proxy/connections.go（记录活跃连接、统计信息）
+- [X] T041 [US3] 添加连接级别的超时控制 internal/proxy/handler.go（避免连接长时间占用）
+- [X] T042 [US3] 优化连接池并发安全 internal/trojan/pool.go（使用互斥锁保护共享状态）
 
 **检查点**: 所有主要用户场景 (1, 2, 3, 4) 现在都应独立工作
 
@@ -147,12 +147,12 @@
 
 ### 实现 用户场景 5
 
-- [ ] T043 [P] [US5] 实现节点状态查询接口 internal/health/query.go（提供节点健康状态、延迟、成功率查询）
-- [ ] T044 [US5] 在配置监听器中实现配置差异计算 internal/config/watcher.go（对比新旧配置，识别新增/删除/修改）
-- [ ] T045 [US5] 实现节点动态添加逻辑 internal/trojan/pool.go（为新节点创建连接池）
-- [ ] T046 [US5] 实现节点动态移除逻辑 internal/trojan/pool.go（优雅关闭连接池，停止使用节点）
-- [ ] T047 [US5] 实现节点配置更新逻辑 internal/trojan/pool.go（更新现有节点配置）
-- [ ] T048 [US5] 添加配置重载完整日志（记录新增、删除、修改的节点）
+- [X] T043 [P] [US5] 实现节点状态查询接口 internal/health/query.go（提供节点健康状态、延迟、成功率查询）
+- [X] T044 [US5] 在配置监听器中实现配置差异计算 internal/config/watcher.go（对比新旧配置，识别新增/删除/修改）
+- [X] T045 [US5] 实现节点动态添加逻辑 internal/trojan/pool.go（为新节点创建连接池）
+- [X] T046 [US5] 实现节点动态移除逻辑 internal/trojan/pool.go（优雅关闭连接池，停止使用节点）
+- [X] T047 [US5] 实现节点配置更新逻辑 internal/trojan/pool.go（更新现有节点配置）
+- [X] T048 [US5] 添加配置重载完整日志（记录新增、删除、修改的节点）
 
 **检查点**: 所有用户场景都已实现
 
@@ -162,16 +162,16 @@
 
 **目的**: 完善文档、优化性能、增强可维护性
 
-- [ ] T049 [P] 创建完整的README.md（项目介绍、功能特性、安装步骤、配置说明、使用示例）
+- [X] T049 [P] 创建完整的README.md（项目介绍、功能特性、安装步骤、配置说明、使用示例）
 - [ ] T050 [P] 创建详细的配置文件文档 docs/configuration.md（基于 contracts/config-schema.md）
-- [ ] T051 [P] 添加代码注释和GoDoc文档（所有公开函数和类型）
-- [ ] T052 实现优雅关闭 cmd/proxy/main.go（监听信号、优雅停止服务、关闭连接）
+- [X] T051 [P] 添加代码注释和GoDoc文档（所有公开函数和类型）
+- [X] T052 实现优雅关闭 cmd/proxy/main.go（监听信号、优雅停止服务、关闭连接）
 - [ ] T053 [P] 性能优化：路由规则预编译和索引优化 internal/router/router.go
 - [ ] T054 [P] 性能优化：实现规则匹配结果缓存 internal/router/cache.go（LRU cache）
 - [ ] T055 [P] 安全加固：配置文件权限检查 internal/config/loader.go（警告不安全权限）
 - [ ] T056 运行 quickstart.md 中的所有验证步骤，确保文档准确
-- [ ] T057 [P] 创建systemd服务文件示例 configs/proxy.service
-- [ ] T058 [P] 添加Makefile（build, install, clean等目标）
+- [X] T057 [P] 创建systemd服务文件示例 configs/proxy.service
+- [X] T058 [P] 添加Makefile（build, install, clean等目标）
 - [ ] T059 代码审查和重构（消除重复代码、改进命名、统一错误处理）
 - [ ] T060 [P] 下载并配置GeoLite2数据库到 data/GeoLite2-Country.mmdb
 

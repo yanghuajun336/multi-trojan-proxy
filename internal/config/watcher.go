@@ -117,3 +117,60 @@ func (w *Watcher) Stop() error {
 	close(w.stopCh)
 	return w.watcher.Close()
 }
+
+// ConfigDiff 配置差异
+type ConfigDiff struct {
+	AddedNodes    []NodeConfig
+	RemovedNodes  []NodeConfig
+	ModifiedNodes []NodeConfig
+	UnchangedNodes []NodeConfig
+}
+
+// CompareConfigs 比较新旧配置，计算差异
+func CompareConfigs(oldCfg, newCfg *Config) *ConfigDiff {
+	diff := &ConfigDiff{
+		AddedNodes:    make([]NodeConfig, 0),
+		RemovedNodes:  make([]NodeConfig, 0),
+		ModifiedNodes: make([]NodeConfig, 0),
+		UnchangedNodes: make([]NodeConfig, 0),
+	}
+
+	// 建立旧节点映射
+	oldNodes := make(map[string]NodeConfig)
+	for _, node := range oldCfg.Nodes {
+		oldNodes[node.Name] = node
+	}
+
+	// 检查新节点
+	for _, newNode := range newCfg.Nodes {
+		if oldNode, exists := oldNodes[newNode.Name]; exists {
+			// 节点存在，检查是否有修改
+			if nodeModified(oldNode, newNode) {
+				diff.ModifiedNodes = append(diff.ModifiedNodes, newNode)
+			} else {
+				diff.UnchangedNodes = append(diff.UnchangedNodes, newNode)
+			}
+			// 从旧节点映射中移除（剩余的就是被删除的）
+			delete(oldNodes, newNode.Name)
+		} else {
+			// 新增节点
+			diff.AddedNodes = append(diff.AddedNodes, newNode)
+		}
+	}
+
+	// 剩余的旧节点都是被删除的
+	for _, removedNode := range oldNodes {
+		diff.RemovedNodes = append(diff.RemovedNodes, removedNode)
+	}
+
+	return diff
+}
+
+// nodeModified 检查节点配置是否有变化
+func nodeModified(old, new NodeConfig) bool {
+	return old.Server != new.Server ||
+		old.Port != new.Port ||
+		old.Password != new.Password ||
+		old.Weight != new.Weight ||
+		old.Enabled != new.Enabled
+}

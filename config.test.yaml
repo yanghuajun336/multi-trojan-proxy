@@ -11,6 +11,10 @@ nodes:
     password: "test_password"
     weight: 10
     enabled: true
+    ssl:
+      sni: "bilibili.com"  # 添加SNI配置
+      verify: false
+      verify_hostname: false
 
 health_check:
   interval: 30s

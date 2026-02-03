@@ -1,0 +1,37 @@
+[Unit]
+Description=Multi-Trojan Proxy Service
+Documentation=https://github.com/yanghuajun/proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=proxy
+Group=proxy
+WorkingDirectory=/opt/proxy
+ExecStart=/opt/proxy/proxy-server -config /opt/proxy/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=10
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# 安全加固
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/proxy
+
+# 资源限制
+LimitNOFILE=65536
+LimitNPROC=512
+
+# 日志
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=proxy
+
+[Install]
+WantedBy=multi-user.target
