@@ -1,6 +1,6 @@
 # Binaries
 proxy-server
-proxy
+/proxy
 *.exe
 *.exe~
 *.dll
