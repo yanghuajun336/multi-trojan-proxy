@@ -1,8 +1,10 @@
 package proxy
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 
 	"github.com/yanghuajun/proxy/internal/trojan"
@@ -11,18 +13,16 @@ import (
 
 // forwardRequest forwards an HTTP request through a trojan client
 func forwardRequest(client *trojan.Client, req *http.Request, w http.ResponseWriter) error {
-	// For MVP, we'll use a simplified approach
-	// In full implementation, this would establish a connection through trojan
-	// and send the HTTP request through that connection
-
-	// Create HTTP client that uses trojan transport
-	// For now, using default transport as placeholder
-	// TODO: Integrate with trojan-go library for actual tunneling
-	
 	logger.Debug("Forwarding HTTP request to %s via %s", req.URL.String(), client.GetNodeName())
 
-	// Send request (simplified - would go through trojan tunnel in full implementation)
+	// Create HTTP client that uses Trojan for dialing
 	httpClient := &http.Client{
+		Transport: &http.Transport{
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				// Use Trojan client to dial
+				return client.Dial(ctx, network, addr)
+			},
+		},
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
