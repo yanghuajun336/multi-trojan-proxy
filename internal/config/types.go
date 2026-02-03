@@ -16,6 +16,13 @@ type ProxyConfig struct {
 	Listen        string        `yaml:"listen"`
 	Timeout       time.Duration `yaml:"timeout"`
 	MaxConcurrent int           `yaml:"max_concurrent"`
+	PoolSize      PoolConfig    `yaml:"pool_size"` // 连接池配置
+}
+
+// PoolConfig represents connection pool configuration
+type PoolConfig struct {
+	MaxIdle   int `yaml:"max_idle"`   // 每个节点最大空闲连接数
+	MaxActive int `yaml:"max_active"` // 每个节点最大活跃连接数
 }
 
 // NodeConfig represents a Trojan node configuration
@@ -83,6 +90,13 @@ func (c *Config) SetDefaults() {
 	}
 	if c.Proxy.MaxConcurrent == 0 {
 		c.Proxy.MaxConcurrent = 20
+	}
+	// Pool size defaults
+	if c.Proxy.PoolSize.MaxIdle == 0 {
+		c.Proxy.PoolSize.MaxIdle = 10
+	}
+	if c.Proxy.PoolSize.MaxActive == 0 {
+		c.Proxy.PoolSize.MaxActive = 100 // 默认每个节点100个连接
 	}
 
 	// Node defaults

@@ -75,7 +75,7 @@ func main() {
 	defer healthChecker.Stop()
 
 	// Initialize trojan node selector
-	selector, err := trojan.NewSelector(cfg.Nodes)
+	selector, err := trojan.NewSelector(cfg.Nodes, cfg.Proxy.PoolSize)
 	if err != nil {
 		logger.Error("Failed to create node selector: %v", err)
 		os.Exit(1)

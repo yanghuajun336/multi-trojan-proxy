@@ -23,18 +23,20 @@ type Selector struct {
 	nodes         []*config.NodeConfig
 	current       int
 	healthChecker HealthChecker
+	poolConfig    config.PoolConfig
 	mu            sync.Mutex
 }
 
 // NewSelector creates a new node selector
-func NewSelector(nodes []config.NodeConfig) (*Selector, error) {
+func NewSelector(nodes []config.NodeConfig, poolConfig config.PoolConfig) (*Selector, error) {
 	if len(nodes) == 0 {
 		return nil, fmt.Errorf("no nodes provided")
 	}
 
 	s := &Selector{
-		pools: make(map[string]*Pool),
-		nodes: make([]*config.NodeConfig, 0, len(nodes)),
+		pools:      make(map[string]*Pool),
+		nodes:      make([]*config.NodeConfig, 0, len(nodes)),
+		poolConfig: poolConfig,
 	}
 
 	// Create pools for enabled nodes
@@ -45,12 +47,13 @@ func NewSelector(nodes []config.NodeConfig) (*Selector, error) {
 			continue
 		}
 
-		// Create connection pool for this node
-		pool := NewPool(node, 5, 10, 10*time.Second)
+		// Create connection pool for this node with configured sizes
+		pool := NewPool(node, poolConfig.MaxIdle, poolConfig.MaxActive, 10*time.Second)
 		s.pools[node.Name] = pool
 		s.nodes = append(s.nodes, node)
 
-		logger.Info("Created connection pool for node: %s (weight=%d)", node.Name, node.Weight)
+		logger.Info("Created connection pool for node: %s (weight=%d, maxIdle=%d, maxActive=%d)",
+			node.Name, node.Weight, poolConfig.MaxIdle, poolConfig.MaxActive)
 	}
 
 	if len(s.nodes) == 0 {
@@ -264,12 +267,14 @@ func (s *Selector) UpdateNodes(nodes []config.NodeConfig) error {
 			delete(oldPools, node.Name)
 			logger.Info("reusing pool for existing node", "node", node.Name)
 		} else {
-			// 创建新的连接池
-			pool := NewPool(node, 5, 10, 10*time.Second)
+			// 创建新的连接池（使用配置的连接池大小）
+			pool := NewPool(node, s.poolConfig.MaxIdle, s.poolConfig.MaxActive, 10*time.Second)
 			newPools[node.Name] = pool
 			logger.Info("created pool for new node",
 				"node", node.Name,
-				"weight", node.Weight)
+				"weight", node.Weight,
+				"maxIdle", s.poolConfig.MaxIdle,
+				"maxActive", s.poolConfig.MaxActive)
 		}
 
 		newNodes = append(newNodes, node)
