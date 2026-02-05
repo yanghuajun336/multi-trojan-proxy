@@ -1,0 +1,72 @@
+# 多Trojan客户端统一代理服务 - 分离配置示例
+# 此配置文件将路由规则分离到单独的 rules.yaml 文件中
+# 复制此文件为 config.yaml 并修改为你的实际配置
+
+# 代理服务配置
+proxy:
+  # 监听地址和端口
+  listen: "0.0.0.0:8080"
+  
+  # HTTP请求超时时间
+  timeout: 30s
+  
+  # 最大并发连接数
+  max_concurrent: 20
+
+# Trojan节点配置列表
+nodes:
+  # 第一个节点示例
+  - name: "us-node-1"
+    server: "us1.trojan.example.com"  # 替换为你的Trojan服务器地址
+    port: 443
+    password: "your_password_here"     # 替换为你的Trojan密码
+    weight: 10                         # 负载均衡权重（1-100）
+    enabled: true                      # 是否启用此节点
+    ssl:
+      sni: "bilibili.com"             # ⚠️ SNI伪装域名（必需）
+      verify: false
+      verify_hostname: false
+    
+  # 第二个节点示例
+  - name: "hk-node-1"
+    server: "hk1.trojan.example.com"
+    port: 443
+    password: "your_password_here"
+    weight: 5
+    enabled: true
+    ssl:
+      sni: "bilibili.com"
+      verify: false
+      verify_hostname: false
+    
+  # 可以添加更多节点...
+
+# 路由规则配置（使用外部文件）
+routing:
+  # 引用外部规则文件（相对于此配置文件的路径）
+  rules_file: "rules.yaml"
+  
+  # 也可以在这里直接配置 GeoIP 数据库路径（会覆盖 rules.yaml 中的配置）
+  # geoip_database: "data/GeoLite2-Country.mmdb"
+
+# 健康检查配置
+health_check:
+  # 检查间隔（不超过30秒）
+  interval: 30s
+  
+  # 单次探测超时
+  timeout: 5s
+  
+  # 连续失败阈值（达到后标记节点为不健康）
+  failure_threshold: 3
+
+# 日志配置
+logging:
+  # 日志级别: debug, info, warn, error
+  level: "info"
+  
+  # 日志文件路径（为空则输出到stdout）
+  file: "/var/log/proxy/proxy.log"
+  
+  # 单个日志文件最大大小（MB）
+  max_size: 100

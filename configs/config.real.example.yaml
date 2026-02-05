@@ -1,0 +1,40 @@
+# 实际可用的配置模板
+# 基于真实Trojan配置转换
+
+proxy:
+  listen: "0.0.0.0:8080"  # 代理服务监听地址
+  timeout: 30s
+  max_concurrent: 20
+
+nodes:
+  # 将你的Trojan配置转换为以下格式
+  - name: "my-trojan-node"
+    server: "xg.xgacc.top"              # 你的remote_addr
+    port: 10111                          # 你的remote_port
+    password: "2a17c69f-b6cb-4d47-958d-0add6ef2f03c"  # 你的password
+    weight: 10
+    enabled: true
+    ssl:
+      # ⚠️ 必须配置SNI
+      sni: "bilibili.com"               # 从你的配置中的ssl.sni
+      verify: false                      # 从你的配置中的ssl.verify
+      verify_hostname: false             # 从你的配置中的ssl.verify_hostname
+      alpn: ["h2", "http/1.1"]          # 从你的配置中的ssl.alpn
+      
+      # 以下为可选配置，使用默认值即可
+      reuse_session: true                # ssl.reuse_session
+      session_ticket: false              # ssl.session_ticket
+      
+      # 密码套件（可选，通常不需要配置）
+      # cipher: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:..."
+      # cipher_tls13: "TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256:..."
+
+health_check:
+  interval: 30s
+  timeout: 5s
+  failure_threshold: 3
+
+logging:
+  level: "info"
+  file: "/var/log/proxy/proxy.log"
+  max_size: 100

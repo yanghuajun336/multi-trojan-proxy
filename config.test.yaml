@@ -1,0 +1,27 @@
+# 测试配置文件
+proxy:
+  listen: "127.0.0.1:8080"
+  timeout: 30s
+  max_concurrent: 10
+
+nodes:
+  - name: "test-node-1"
+    server: "example.trojan.com"
+    port: 443
+    password: "test_password"
+    weight: 10
+    enabled: true
+    ssl:
+      sni: "bilibili.com"  # 添加SNI配置
+      verify: false
+      verify_hostname: false
+
+health_check:
+  interval: 30s
+  timeout: 5s
+  failure_threshold: 3
+
+logging:
+  level: "debug"
+  file: ""  # Output to stdout for testing
+  max_size: 100
